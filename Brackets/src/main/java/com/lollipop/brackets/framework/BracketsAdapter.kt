@@ -1,5 +1,6 @@
 package com.lollipop.brackets.framework
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -20,11 +21,23 @@ interface BracketsAdapter {
 
     fun notifyItemChanged(position: Int)
 
+    fun setData(list: List<Brackets>)
+
 }
 
 internal class BracketsAdapterHelper {
+    val list: List<Brackets>
+        get() {
+            return dataList
+        }
+    private val dataList = ArrayList<Brackets>()
     private val tempItemId = HashMap<Class<out Brackets>, Int>()
     private val itemCreatorSet = HashMap<Int, Brackets>()
+
+    fun setData(data: List<Brackets>) {
+        dataList.clear()
+        dataList.addAll(data)
+    }
 
     private fun getOrCreateTempId(brackets: Brackets): Int {
         val clazz = brackets::class.java
@@ -55,7 +68,6 @@ internal class BracketsAdapterHelper {
 
 class FullBracketsAdapter(
     private val viewGroup: ViewGroup,
-    private val list: List<Brackets>
 ) : BracketsAdapter {
 
     private val adapterHelper = BracketsAdapterHelper()
@@ -69,21 +81,21 @@ class FullBracketsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return adapterHelper.list.size
     }
 
     override fun onBindViewHolder(holder: BracketsHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(adapterHelper.list[position])
     }
 
     override fun getItemViewType(position: Int): Int {
-        return adapterHelper.getTypeId(list[position])
+        return adapterHelper.getTypeId(adapterHelper.list[position])
     }
 
     override fun notifyDataSetChanged() {
         viewGroup.removeAllViews()
         itemTypeMap.clear()
-        for (index in list.indices) {
+        for (index in adapterHelper.list.indices) {
             val viewType = getItemViewType(index)
             itemTypeMap[index] = viewType
             val holder = onCreateViewHolder(viewGroup, viewType)
@@ -115,10 +127,14 @@ class FullBracketsAdapter(
         onBindViewHolder(holder, position)
     }
 
+    override fun setData(list: List<Brackets>) {
+        adapterHelper.setData(list)
+        notifyDataSetChanged()
+    }
+
 }
 
 class RecyclerBracketsAdapter(
-    private val list: List<Brackets>
 ) : RecyclerView.Adapter<BracketsHolder>(), BracketsAdapter {
 
     private val adapterHelper = BracketsAdapterHelper()
@@ -130,16 +146,21 @@ class RecyclerBracketsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return adapterHelper.list.size
     }
 
     override fun onBindViewHolder(holder: BracketsHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(adapterHelper.list[position])
     }
 
     override fun getItemViewType(position: Int): Int {
-        return adapterHelper.getTypeId(list[position])
+        return adapterHelper.getTypeId(adapterHelper.list[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    override fun setData(list: List<Brackets>) {
+        adapterHelper.setData(list)
+        notifyDataSetChanged()
+    }
 
 }

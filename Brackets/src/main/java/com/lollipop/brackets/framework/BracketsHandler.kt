@@ -1,16 +1,32 @@
 package com.lollipop.brackets.framework
 
+import com.lollipop.brackets.BracketsConfig
 import com.lollipop.brackets.core.Brackets
+import com.lollipop.brackets.core.BracketsContentBuilder
+import com.lollipop.brackets.core.BracketsFilter
 import com.lollipop.brackets.core.ExpandGroupScope
 import com.lollipop.brackets.core.Scope
 import java.util.LinkedList
 
-sealed class BracketsHandler : Brackets.Callback {
+class BracketsHandler(private val adapter: BracketsAdapter) : Brackets.Callback {
 
     private val bracketsRootScope = BracketsRootScope()
     private val finalBracketsList = ArrayList<Brackets>()
 
-    fun build(builder: BracketsBuilder) {
+    private var bracketsFilter: BracketsFilter? = null
+    private val defaultFilter: BracketsFilter? by lazy {
+        BracketsConfig.createBracketsFilter()
+    }
+
+    fun setFilter(filter: BracketsFilter?) {
+        this.bracketsFilter = filter
+    }
+
+    private fun getFilter(): BracketsFilter? {
+        return bracketsFilter ?: defaultFilter
+    }
+
+    fun build(builder: BracketsContentBuilder<Brackets>) {
         bracketsRootScope.bracketsList.clear()
         builder.buildBrackets(bracketsRootScope)
         parseBrackets()
@@ -36,10 +52,13 @@ sealed class BracketsHandler : Brackets.Callback {
         onBracketsListReady(finalBracketsList)
     }
 
-    protected abstract fun onBracketsListReady(list: List<Brackets>)
+    private fun onBracketsListReady(list: List<Brackets>) {
+        adapter.setData(list)
+    }
 
-    protected open fun filter(brackets: Brackets): Brackets? {
-        return brackets
+    private fun filter(brackets: Brackets): Brackets? {
+        val filter = getFilter() ?: return brackets
+        return filter.filter(brackets)
     }
 
     override fun notifyItemChanged(tag: String) {
@@ -50,23 +69,8 @@ sealed class BracketsHandler : Brackets.Callback {
         }
     }
 
-    protected abstract fun notifyItemChanged(position: Int)
-
-    class Linear: BracketsHandler() {
-        override fun onBracketsListReady(list: List<Brackets>) {
-            TODO("Not yet implemented")
-        }
-
-        override fun notifyItemChanged(position: Int) {
-            TODO("Not yet implemented")
-        }
-
-    }
-
-    fun interface BracketsBuilder {
-
-        fun buildBrackets(scope: Scope<Brackets>)
-
+    private fun notifyItemChanged(position: Int) {
+        adapter.notifyItemChanged(position)
     }
 
 }
