@@ -19,27 +19,27 @@ interface BracketsAdapter {
 
     fun notifyDataSetChanged()
 
-    fun notifyItemChanged(position: Int)
+    fun notifyItemChanged(tag: String)
 
-    fun setData(list: List<Brackets>)
+    fun setData(list: List<Brackets<*>>)
 
 }
 
 internal class BracketsAdapterHelper {
-    val list: List<Brackets>
+    val list: List<Brackets<*>>
         get() {
             return dataList
         }
-    private val dataList = ArrayList<Brackets>()
-    private val tempItemId = HashMap<Class<out Brackets>, Int>()
-    private val itemCreatorSet = HashMap<Int, Brackets>()
+    private val dataList = ArrayList<Brackets<*>>()
+    private val tempItemId = HashMap<Class<out Brackets<*>>, Int>()
+    private val itemCreatorSet = HashMap<Int, Brackets<*>>()
 
-    fun setData(data: List<Brackets>) {
+    fun setData(data: List<Brackets<*>>) {
         dataList.clear()
         dataList.addAll(data)
     }
 
-    private fun getOrCreateTempId(brackets: Brackets): Int {
+    private fun getOrCreateTempId(brackets: Brackets<*>): Int {
         val clazz = brackets::class.java
         val id = tempItemId[clazz]
         if (id != null) {
@@ -50,7 +50,7 @@ internal class BracketsAdapterHelper {
         return newId
     }
 
-    fun getTypeId(brackets: Brackets): Int {
+    fun getTypeId(brackets: Brackets<*>): Int {
         val typeId = brackets.typeId
         val finalTypeId = if (typeId == 0) {
             getOrCreateTempId(brackets)
@@ -64,19 +64,42 @@ internal class BracketsAdapterHelper {
     fun createView(parent: ViewGroup, viewType: Int): View {
         return itemCreatorSet[viewType]?.createView(parent) ?: TextView(parent.context)
     }
+
+    fun findPositionByTag(tag: String): Int {
+        for (i in dataList.indices) {
+            if (dataList[i].tag == tag) {
+                return i
+            }
+        }
+        return -1
+    }
+
+    fun findPositionByTag(tag: String, callback: (Int) -> Unit) {
+        val position = findPositionByTag(tag)
+        if (position >= 0 && position < dataList.size) {
+            callback(position)
+        }
+    }
+
 }
 
 class FullBracketsAdapter(
     private val viewGroup: ViewGroup,
-) : BracketsAdapter {
+) : BracketsAdapter, BracketsHolder.OnItemViewClickListener {
 
     private val adapterHelper = BracketsAdapterHelper()
 
     private val itemTypeMap = HashMap<Int, Int>()
 
+    private val pendingUpdateSet = HashSet<String>()
+
+    private val pendingChangeCallback = Runnable {
+        updateByPending()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BracketsHolder {
         return BracketsHolder(
-            adapterHelper.createView(parent, viewType)
+            adapterHelper.createView(parent, viewType), this
         )
     }
 
@@ -99,13 +122,33 @@ class FullBracketsAdapter(
             val viewType = getItemViewType(index)
             itemTypeMap[index] = viewType
             val holder = onCreateViewHolder(viewGroup, viewType)
+            holder.positionInLayout = index
             val itemView = holder.itemView
             viewGroup.addView(itemView)
             onBindViewHolder(holder, index)
         }
     }
 
-    override fun notifyItemChanged(position: Int) {
+    override fun notifyItemChanged(tag: String) {
+        pendingUpdateSet.add(tag)
+        viewGroup.removeCallbacks(pendingChangeCallback)
+        viewGroup.post(pendingChangeCallback)
+    }
+
+    private fun updateByPending() {
+        if (pendingUpdateSet.isEmpty()) {
+            return
+        }
+        val tagList = ArrayList<String>(pendingUpdateSet)
+        pendingUpdateSet.clear()
+        tagList.forEach { tag ->
+            adapterHelper.findPositionByTag(tag) { position ->
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+    private fun notifyItemChanged(position: Int) {
         if (position < 0 || position >= getItemCount()) {
             return
         }
@@ -127,21 +170,29 @@ class FullBracketsAdapter(
         onBindViewHolder(holder, position)
     }
 
-    override fun setData(list: List<Brackets>) {
+    override fun setData(list: List<Brackets<*>>) {
         adapterHelper.setData(list)
         notifyDataSetChanged()
+    }
+
+    override fun onItemViewClick(itemView: View, viewId: Int, position: Int) {
+        if (position < 0 || position >= getItemCount()) {
+            return
+        }
+        adapterHelper.list[position].onViewClick(itemView, viewId)
     }
 
 }
 
 class RecyclerBracketsAdapter(
-) : RecyclerView.Adapter<BracketsHolder>(), BracketsAdapter {
+) : RecyclerView.Adapter<BracketsHolder>(), BracketsAdapter,
+    BracketsHolder.OnItemViewClickListener {
 
     private val adapterHelper = BracketsAdapterHelper()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BracketsHolder {
         return BracketsHolder(
-            adapterHelper.createView(parent, viewType)
+            adapterHelper.createView(parent, viewType), this
         )
     }
 
@@ -157,8 +208,21 @@ class RecyclerBracketsAdapter(
         return adapterHelper.getTypeId(adapterHelper.list[position])
     }
 
+    override fun notifyItemChanged(tag: String) {
+        adapterHelper.findPositionByTag(tag) {
+            notifyItemChanged(it)
+        }
+    }
+
+    override fun onItemViewClick(itemView: View, viewId: Int, position: Int) {
+        if (position < 0 || position >= itemCount) {
+            return
+        }
+        adapterHelper.list[position].onViewClick(itemView, viewId)
+    }
+
     @SuppressLint("NotifyDataSetChanged")
-    override fun setData(list: List<Brackets>) {
+    override fun setData(list: List<Brackets<*>>) {
         adapterHelper.setData(list)
         notifyDataSetChanged()
     }

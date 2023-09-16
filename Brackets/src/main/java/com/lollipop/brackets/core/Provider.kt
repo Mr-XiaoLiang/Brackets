@@ -5,15 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import kotlin.reflect.KProperty
 
 fun interface TypedProvider<T> {
-    fun invoke(): T
+    operator fun invoke(): T
 }
 
 fun interface TypedResponse<T> {
-    fun invoke(any: T)
+    operator fun invoke(any: T)
 }
 
 class Stateless<T>(private val value: T) : TypedProvider<T> {
-    override fun invoke(): T {
+    override operator fun invoke(): T {
         return value
     }
 }
@@ -31,7 +31,7 @@ class Stateful<T>(private val defValue: T) : TypedProvider<T> {
         liveData.value = newValue
     }
 
-    override fun invoke(): T {
+    override operator fun invoke(): T {
         return liveData.value ?: defValue
     }
 
