@@ -8,18 +8,18 @@ open class Protocol {
 
 }
 
-open class GroupProtocol<T : Brackets<*>> : Protocol(), Scope<T> {
+open class GroupProtocol : Protocol(), Scope {
 
-    private val childrenList = ArrayList<T>()
+    private val childrenList = ArrayList<Brackets<*>>()
 
     protected var childrenLock = false
 
-    val children: List<T>
+    val children: List<Brackets<*>>
         get() {
             return childrenList
         }
 
-    override fun add(item: T) {
+    override fun add(item: Brackets<*>) {
         if (childrenLock) {
             return
         }

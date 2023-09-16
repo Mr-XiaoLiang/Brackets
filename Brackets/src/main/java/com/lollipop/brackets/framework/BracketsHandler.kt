@@ -25,7 +25,7 @@ class BracketsHandler(private val adapter: BracketsAdapter) : Brackets.Callback 
         return bracketsFilter ?: defaultFilter
     }
 
-    fun build(builder: BracketsContentBuilder<Brackets<*>>) {
+    fun build(builder: BracketsContentBuilder) {
         bracketsRootScope.bracketsList.clear()
         builder.buildBrackets(bracketsRootScope)
         parseBrackets()
@@ -40,7 +40,7 @@ class BracketsHandler(private val adapter: BracketsAdapter) : Brackets.Callback 
             val first = filter(pending.removeFirst()) ?: continue
             first.setCallback(this)
             finalBracketsList.add(first)
-            if (first is GroupBrackets<*, *> && first.expand) {
+            if (first is GroupBrackets<*> && first.expand) {
                 val children = first.children
                 val size = children.size
                 for (i in (size - 1) downTo 0) {

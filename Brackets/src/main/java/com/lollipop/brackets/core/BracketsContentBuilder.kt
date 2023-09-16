@@ -1,7 +1,7 @@
 package com.lollipop.brackets.core
 
-fun interface BracketsContentBuilder<T : Brackets<*>> {
+fun interface BracketsContentBuilder {
 
-    fun buildBrackets(scope: Scope<T>)
+    fun buildBrackets(scope: Scope)
 
 }

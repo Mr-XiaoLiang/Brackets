@@ -1,7 +1,7 @@
 package com.lollipop.brackets.core
 
-interface Scope<T : Brackets<*>> {
+interface Scope {
 
-    fun add(item: T)
+    fun add(item: Brackets<*>)
 
 }

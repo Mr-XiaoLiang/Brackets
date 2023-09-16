@@ -77,7 +77,7 @@ open class BracketsFragment : Fragment() {
         adapterHandler?.build(builder)
     }
 
-    protected fun Scope<Brackets<*>>.buildContent() {
+    protected fun Scope.buildContent() {
         val builder = contentBuilder ?: return
         builder.buildContent(this@BracketsFragment, this)
     }
@@ -120,9 +120,9 @@ open class BracketsFragment : Fragment() {
     }
 
     protected class BracketsContentBuilderImpl(
-        private val callback: Scope<Brackets<*>>.() -> Unit
-    ) : BracketsContentBuilder<Brackets<*>> {
-        override fun buildBrackets(scope: Scope<Brackets<*>>) {
+        private val callback: Scope.() -> Unit
+    ) : BracketsContentBuilder {
+        override fun buildBrackets(scope: Scope) {
             callback(scope)
         }
 
@@ -130,7 +130,7 @@ open class BracketsFragment : Fragment() {
 
     fun interface ContentBuilder {
 
-        fun buildContent(fragment: BracketsFragment, scope: Scope<Brackets<*>>)
+        fun buildContent(fragment: BracketsFragment, scope: Scope)
 
     }
 

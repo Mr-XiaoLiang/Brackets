@@ -6,6 +6,8 @@ import com.lollipop.brackets.core.Brackets
 import com.lollipop.brackets.core.Scope
 import com.lollipop.brackets.core.Stateful
 import com.lollipop.brackets.core.Stateless
+import com.lollipop.brackets.core.dp
+import com.lollipop.brackets.impl.Space
 import com.lollipop.brackets.kit.BracketsFragment
 
 class DemoActivity : AppCompatActivity(), BracketsFragment.ContentBuilder {
@@ -15,13 +17,16 @@ class DemoActivity : AppCompatActivity(), BracketsFragment.ContentBuilder {
         setContentView(R.layout.activity_demo)
     }
 
-    override fun buildContent(fragment: BracketsFragment, scope: Scope<Brackets<*>>) {
+    override fun buildContent(fragment: BracketsFragment, scope: Scope) {
         scope.apply {
             RadioGroup {
                 title = Stateless("单选框1")
                 Radio {
                     title = Stateless("单选1号")
                     isChecked = Stateful(true)
+                }
+                Space {
+                    size = Stateless(30.dp)
                 }
                 Radio {
                     title = Stateless("单选2号")
@@ -32,6 +37,9 @@ class DemoActivity : AppCompatActivity(), BracketsFragment.ContentBuilder {
                 Radio {
                     title = Stateless("单选4号")
                 }
+            }
+            Space {
+                size = Stateless(30.dp)
             }
             RadioGroup {
                 title = Stateless("单选框2")

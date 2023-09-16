@@ -3,14 +3,13 @@ package com.lollipop.brackets_demo
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.lollipop.brackets.core.Brackets
 import com.lollipop.brackets.core.Scope
 import com.lollipop.brackets.impl.RadioGroupBrackets
 import com.lollipop.brackets.impl.RadioGroupProtocol
 
 class DemoRadioGroup(
     protocol: DemoRadioGroupProtocol
-) : RadioGroupBrackets<DemoRadioItem, DemoRadioGroupProtocol>(protocol) {
+) : RadioGroupBrackets<DemoRadioGroupProtocol>(protocol) {
 
     override val typeId: Int
         get() = R.layout.brackets_radio_group
@@ -26,9 +25,9 @@ class DemoRadioGroup(
     }
 }
 
-class DemoRadioGroupProtocol : RadioGroupProtocol<DemoRadioItem>()
+class DemoRadioGroupProtocol : RadioGroupProtocol()
 
-inline fun Scope<Brackets<*>>.RadioGroup(
+fun Scope.RadioGroup(
     builder: DemoRadioGroupProtocol.() -> Unit
 ) {
     val protocol = DemoRadioGroupProtocol()

@@ -1,13 +1,14 @@
 package com.lollipop.brackets.impl
 
 import android.view.View
+import com.lollipop.brackets.core.Brackets
 import com.lollipop.brackets.core.GroupBrackets
 import com.lollipop.brackets.core.GroupProtocol
 import com.lollipop.brackets.core.Stateful
 import com.lollipop.brackets.core.TypedProvider
 import com.lollipop.brackets.core.TypedResponse
 
-open class RadioGroupProtocol<B : RadioBrackets<*>> : GroupProtocol<B>() {
+open class RadioGroupProtocol : GroupProtocol() {
 
     var checkedTag: TypedProvider<String> = TypedProvider { "" }
 
@@ -28,9 +29,9 @@ open class RadioGroupProtocol<B : RadioBrackets<*>> : GroupProtocol<B>() {
 
 }
 
-abstract class RadioGroupBrackets<B : RadioBrackets<*>, P : RadioGroupProtocol<B>>(
+abstract class RadioGroupBrackets<P : RadioGroupProtocol>(
     protocol: P
-) : GroupBrackets<B, P>(protocol), RadioBrackets.CheckedCallback {
+) : GroupBrackets<P>(protocol), RadioBrackets.CheckedCallback {
 
     private var checkStateLock = false
 
@@ -40,7 +41,7 @@ abstract class RadioGroupBrackets<B : RadioBrackets<*>, P : RadioGroupProtocol<B
     override fun onChildrenReady() {
         super.onChildrenReady()
         var firstChecked = protocol.checkedTag()
-        children.forEach {
+        forEachChildrenByType<RadioBrackets<*>> {
             it.setCheckedCallback(this)
             if (firstChecked.isEmpty()) {
                 if (it.isChecked()) {
@@ -71,7 +72,7 @@ abstract class RadioGroupBrackets<B : RadioBrackets<*>, P : RadioGroupProtocol<B
                 protocol.onCheckedChanged(RadioGroupProtocol.CheckResult(newTag, false))
             }
         }
-        children.forEach {
+        forEachChildrenByType<RadioBrackets<*>> {
             if (brackets !== it) {
                 it.setCheckState(it.tag == newTag)
             }
