@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.RadioButton
 import android.widget.TextView
+import com.lollipop.brackets.core.BracketsUtils
 import com.lollipop.brackets.impl.RadioBrackets
 import com.lollipop.brackets.impl.RadioGroupProtocol
 import com.lollipop.brackets.impl.RadioProtocol
@@ -42,7 +43,5 @@ class DemoRadioItem(
 inline fun RadioGroupProtocol.Radio(
     builder: RadioProtocol.() -> Unit
 ) {
-    val protocol = RadioProtocol()
-    builder(protocol)
-    add(DemoRadioItem(protocol))
+    BracketsUtils.createBuilder<DemoRadioItem, RadioProtocol>(this, builder)
 }

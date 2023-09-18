@@ -22,3 +22,16 @@ inline val <reified T : Number> T.sp: Float
             Resources.getSystem().displayMetrics
         )
     }
+
+object BracketsUtils  {
+    inline fun <reified B : Brackets<*>, reified P : Protocol> createBuilder(
+        scope: Scope,
+        builder: P.() -> Unit
+    ) {
+        val protocol = P::class.java.newInstance()
+        builder(protocol)
+        val constructor = B::class.java.getConstructor(P::class.java)
+        val brackets = constructor.newInstance(protocol)
+        scope.add(brackets)
+    }
+}

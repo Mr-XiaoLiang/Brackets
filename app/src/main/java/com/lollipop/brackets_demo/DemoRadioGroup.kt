@@ -3,6 +3,7 @@ package com.lollipop.brackets_demo
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.lollipop.brackets.core.BracketsUtils
 import com.lollipop.brackets.core.Scope
 import com.lollipop.brackets.impl.RadioGroupBrackets
 import com.lollipop.brackets.impl.RadioGroupProtocol
@@ -30,7 +31,5 @@ class DemoRadioGroupProtocol : RadioGroupProtocol()
 fun Scope.RadioGroup(
     builder: DemoRadioGroupProtocol.() -> Unit
 ) {
-    val protocol = DemoRadioGroupProtocol()
-    builder(protocol)
-    add(DemoRadioGroup(protocol))
+    BracketsUtils.createBuilder<DemoRadioGroup, DemoRadioGroupProtocol>(this, builder)
 }

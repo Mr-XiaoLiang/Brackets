@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Space
 import com.lollipop.brackets.core.Brackets
+import com.lollipop.brackets.core.BracketsUtils
 import com.lollipop.brackets.core.Protocol
 import com.lollipop.brackets.core.Scope
 import com.lollipop.brackets.core.TypedProvider
@@ -36,10 +37,8 @@ class SpaceBrackets(protocol: SpaceProtocol) : Brackets<SpaceProtocol>(protocol)
     }
 }
 
-inline fun Scope.Space(
+fun Scope.Space(
     builder: SpaceProtocol.() -> Unit
 ) {
-    val protocol = SpaceProtocol()
-    builder(protocol)
-    add(SpaceBrackets(protocol))
+    BracketsUtils.createBuilder<SpaceBrackets, SpaceProtocol>(this, builder)
 }
