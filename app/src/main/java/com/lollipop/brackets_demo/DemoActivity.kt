@@ -2,7 +2,6 @@ package com.lollipop.brackets_demo
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.lollipop.brackets.core.Brackets
 import com.lollipop.brackets.core.Scope
 import com.lollipop.brackets.core.Stateful
 import com.lollipop.brackets.core.Stateless

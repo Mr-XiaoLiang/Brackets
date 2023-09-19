@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
 }
 
 android {
@@ -36,4 +37,49 @@ dependencies {
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
+}
+
+
+// Because the components are created only during the afterEvaluate phase, you must
+// configure your publications using the afterEvaluate() lifecycle method.
+afterEvaluate {
+
+
+//            // Creates a Maven publication called "release".
+//            release(MavenPublication) {
+//                // Applies the component for the release build variant.
+//                from components.release
+//
+//                        // You can then customize attributes of the publication as shown below.
+//                        groupId = 'com.example.MyLibrary'
+//                artifactId = 'final'
+//                version = '1.0'
+//            }
+//            // Creates a Maven publication called “debug”.
+//            debug(MavenPublication) {
+//                // Applies the component for the debug build variant.
+//                from components . debug
+//
+//                        groupId = 'com.example.MyLibrary'
+//                artifactId = 'final-debug'
+//                version = '1.0'
+//            }
+//        }
+//    }
+
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = "com.lollipoppp.brackets"
+                artifactId = "core"
+                version = "1.0"
+                afterEvaluate {
+                    artifact(tasks.getByName("bundleReleaseAar"))
+                }
+//                repository(url: mavenLocal().getUrl())
+//                repositories { uri(mavenLocal().url) }
+//                from(components["java"])
+            }
+        }
+    }
 }
