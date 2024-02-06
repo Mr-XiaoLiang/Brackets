@@ -85,9 +85,9 @@ abstract class Brackets<P : Protocol>(protected val protocol: P) {
         private val onChanged: (last: T, new: T) -> Unit
     ) : Observer<T> {
 
-        override fun onChanged(t: T) {
-            onChanged(lastValue, t)
-            lastValue = t
+        override fun onChanged(value: T) {
+            onChanged(lastValue, value)
+            lastValue = value
         }
 
     }

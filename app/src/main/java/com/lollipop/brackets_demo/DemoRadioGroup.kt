@@ -29,7 +29,7 @@ class DemoRadioGroup(
 class DemoRadioGroupProtocol : RadioGroupProtocol()
 
 fun Scope.RadioGroup(
-    builder: DemoRadioGroupProtocol.() -> Unit
+    builder: (DemoRadioGroupProtocol).() -> Unit
 ) {
     BracketsUtils.createBuilder<DemoRadioGroup, DemoRadioGroupProtocol>(this, builder)
 }

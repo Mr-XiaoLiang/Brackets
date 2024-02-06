@@ -7,7 +7,7 @@ object BracketsConfig {
     var defaultBracketsFilter: Class<out BracketsFilter>? = null
 
     fun createBracketsFilter(): BracketsFilter? {
-        return defaultBracketsFilter?.newInstance()
+        return defaultBracketsFilter?.getDeclaredConstructor()?.newInstance()
     }
 
 }

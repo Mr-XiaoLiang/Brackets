@@ -39,6 +39,6 @@ class DemoEditItem(
     }
 }
 
-fun Scope.Edit(builder: DemoEditProtocol.() -> Unit) {
+fun Scope.Edit(builder: (DemoEditProtocol).() -> Unit) {
     BracketsUtils.createBuilder<DemoEditItem, DemoEditProtocol>(this, builder)
 }

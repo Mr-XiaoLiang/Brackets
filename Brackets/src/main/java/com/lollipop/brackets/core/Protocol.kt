@@ -1,5 +1,6 @@
 package com.lollipop.brackets.core
 
+@BracketsScope
 open class Protocol {
 
     var title: TypedProvider<String> = TypedProvider { "" }

@@ -41,7 +41,7 @@ class DemoRadioItem(
 }
 
 inline fun RadioGroupProtocol.Radio(
-    builder: RadioProtocol.() -> Unit
+    builder: (RadioProtocol).() -> Unit
 ) {
     BracketsUtils.createBuilder<DemoRadioItem, RadioProtocol>(this, builder)
 }

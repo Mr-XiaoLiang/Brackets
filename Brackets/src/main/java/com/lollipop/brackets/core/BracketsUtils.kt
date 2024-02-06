@@ -28,7 +28,7 @@ object BracketsUtils  {
         scope: Scope,
         builder: P.() -> Unit
     ) {
-        val protocol = P::class.java.newInstance()
+        val protocol = P::class.java.getDeclaredConstructor().newInstance()
         builder(protocol)
         val constructor = B::class.java.getConstructor(P::class.java)
         val brackets = constructor.newInstance(protocol)
