@@ -1,0 +1,12 @@
+[versions]
+appcompatVersion = "1.6.1"
+coreKtxVersion = "1.12.0"
+bracketsCoreVersion = "1.0"
+lifecycleRuntimeKtxVersion = "2.7.0"
+materialVersion = "1.11.0"
+[libraries]
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
+bracketsCore = { module = "com.lollipoppp.brackets:core", version.ref = "bracketsCoreVersion" }
+lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
+material = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
