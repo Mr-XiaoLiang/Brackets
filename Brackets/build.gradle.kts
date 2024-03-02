@@ -72,7 +72,7 @@ afterEvaluate {
             create<MavenPublication>("maven") {
                 groupId = "com.lollipoppp.brackets"
                 artifactId = "core"
-                version = "1.2"
+                version = "1.3"
                 afterEvaluate {
                     artifact(tasks.getByName("bundleReleaseAar"))
                 }

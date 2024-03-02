@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lollipop.brackets.core.Brackets
 import com.lollipop.brackets.core.BracketsContentBuilder
 import com.lollipop.brackets.core.Scope
 import com.lollipop.brackets.framework.BracketsHandler
@@ -122,8 +121,8 @@ open class BracketsFragment : Fragment() {
     protected class BracketsContentBuilderImpl(
         private val callback: Scope.() -> Unit
     ) : BracketsContentBuilder {
-        override fun buildBrackets(scope: Scope) {
-            callback(scope)
+        override fun Scope.buildBrackets() {
+            callback(this)
         }
 
     }

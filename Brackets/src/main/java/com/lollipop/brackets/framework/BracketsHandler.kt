@@ -27,7 +27,9 @@ class BracketsHandler(private val adapter: BracketsAdapter) : Brackets.Callback 
 
     fun build(builder: BracketsContentBuilder) {
         bracketsRootScope.bracketsList.clear()
-        builder.buildBrackets(bracketsRootScope)
+        builder.apply {
+            bracketsRootScope.buildBrackets()
+        }
         parseBrackets()
     }
 
